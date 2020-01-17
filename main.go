@@ -5,11 +5,12 @@ import (
 	"gitlab.reynencourt.com/reynen-court/rc-rules-engine/helpers"
 	"gitlab.reynencourt.com/reynen-court/rc-rules-engine/routes"
 	"gitlab.reynencourt.com/reynen-court/rc-rules-engine/service"
-	etcdConn "gitlab.reynencourt.com/reynen-court/rc-common-lib/rc_etcd"
+	//etcdConn "gitlab.reynencourt.com/reynen-court/rc-common-lib/rc_etcd"
+	"gitlab.reynencourt.com/reynen-court/rc-rules-engine/database"
 	"log"
 	"net/http"
 	"os"
-	"strings"
+	//"strings"
 )
 
 
@@ -20,8 +21,9 @@ func main() {
 	r := mux.NewRouter().StrictSlash(false)
 	mainRoutes := r.PathPrefix("/api/v1/rule_engine").Subrouter()
 	ruleSet := helpers.RuleSet{}
-	etcdAddresses := strings.Split(os.Getenv("ETCD_ADDR"), ",")
-	_, err := etcdConn.New(etcdAddresses)
+	//etcdAddresses := strings.Split(os.Getenv("ETCD_ADDR"), ",")
+	//_, err := etcdConn.New(etcdAddresses)
+	_, err := database.ConnectEtcd()
 	if err != nil{
 		log.Println("Etcd may be down")
 		os.Exit(3)
