@@ -1,0 +1,45 @@
+<roulette>
+    <ruleset name="eventRules" dataKey="MyData" resultKey="result" filterTypes="models.AddNode"
+             filterStrict="false" prioritiesCount="all"  workflow="AddNodeCycle">
+        <rule name="addNodeRules" priority="3">
+            <r>with .MyData</r>
+            <r>
+                eq .models.AddNode.EventType "AddNode"|
+                and (gt .models.AddNode.EventOccured 5) |
+                and (eq .models.AddNode.ServiceName "DM") |
+                .models.AddNode.SetAlertType "Mail" |
+                .models.AddNode.SetTimeFrame "lt" "Minutes" 1.0
+            </r>
+            <r>end</r>
+        </rule>
+    </ruleset>
+
+    <ruleset name="eventRules2" dataKey="MyData" resultKey="result" filterTypes="models.SyncApps"
+             filterStrict="false" prioritiesCount="all"  workflow="SyncAppsCycle">
+        <rule name="SyncAppsRules" priority="2">
+            <r>with .MyData</r>
+            <r>
+                eq .models.SyncApps.EventType "SyncApps"|
+                and (gt .models.SyncApps.EventOccured 2) |
+                .models.SyncApps.SetAlertType "Mail" |
+                .models.SyncApps.SetTimeFrame "lt" "Minutes" 1.0
+            </r>
+            <r>end</r>
+        </rule>
+    </ruleset>
+
+    <ruleset name="eventRules3" dataKey="MyData" resultKey="result" filterTypes="models.AddNode"
+             filterStrict="false" prioritiesCount="all"  workflow="AddNodeFailedCycle">
+        <rule name="addNodeFailedRules" priority="1">
+            <r>with .MyData</r>
+            <r>
+                eq .models.AddNode.EventType "AddNodeFailed"|
+                and (gt .models.AddNode.EventOccured 5) |
+                and (eq .models.AddNode.ServiceName "DM") |
+                .models.AddNode.SetAlertType "Mail" |
+                .models.AddNode.SetTimeFrame "lt" "Minutes" 1.0
+            </r>
+            <r>end</r>
+        </rule>
+    </ruleset>
+</roulette>
