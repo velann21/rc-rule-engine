@@ -6,8 +6,6 @@ import (
 	"io"
 	"log"
 	"os"
-	"path/filepath"
-	"runtime"
 )
 
 const (
@@ -541,9 +539,9 @@ func (reloadRuleSet *ReloadRuleSet) PopulateRuleSet(body io.ReadCloser) error {
 
 func (reloadRuleSet *ReloadRuleSet) ValidateAndResetPath(){
 	if reloadRuleSet.FilePath == ""{
-		_, b, _, _ := runtime.Caller(0)
-		basepath   := filepath.Dir(b)
-       reloadRuleSet.FilePath = basepath+os.Getenv("RULESET_FILEPATH")
+		//_, b, _, _ := runtime.Caller(0)
+		//basepath   := filepath.Dir(b)
+       reloadRuleSet.FilePath = os.Getenv("RULESET_FILEPATH")
 	}
 }
 
