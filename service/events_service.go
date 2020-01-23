@@ -14,7 +14,6 @@ import (
 
 func SyncAppsEvents(ctx context.Context, eventsRequest *requests.SyncApps) error {
 	ruleSetObj := helpers.GetRuleSetObject()
-	fmt.Println(ruleSetObj)
 	etcdConnection := database.GetEtcdConnection()
 	resp, err := dao.GetEvent(ctx, etcdConnection, eventsRequest.EventType)
 	if err != nil{
@@ -210,10 +209,12 @@ func ExecuteEventForNotification(){
 					}
 					return
 				}
+
 				err = dao.StoreEvent(context.Background(), etcdConnection,task.EventType, jsonData)
 				if err != nil{
 					return
 				}
+
 				return
 			}()
 		case task := <-deployAppsChan:
@@ -253,6 +254,8 @@ func ExecuteEventForNotification(){
 				if err != nil{
 					return
 				}
+				fmt.Println("IsDelete Approved", isDeleteApproved)
+				fmt.Println(shouldAlertTriggered)
 				if shouldAlertTriggered{
 					fmt.Println("Sending an Email")
 					alertManagerFactoryProd := helpers.AlertManagerFactoryProducer{}
@@ -285,7 +288,10 @@ func ExecuteEventForNotification(){
 					alertManagerFactoryProd := helpers.AlertManagerFactoryProducer{}
 					alertManagerFactoryProd.GetAlertManagerFactory(helpers.PrometheusAMC).GetAlertType("Mail").Alert(map[string]string{"alertname":"testalert"})
 				}
+				fmt.Println("IsDelete Approved", isDeleteApproved)
+				fmt.Println(shouldAlertTriggered)
 				if isDeleteApproved{
+
 					err = dao.DeleteEvent(context.Background(), etcdConnection, task.EventType)
 					if err != nil{
 						return
@@ -358,6 +364,9 @@ func ExecuteEventForNotification(){
 
 func checkTimeFrameAndSendNotification(unit string,timeFrame float64, operator string,
 	lastTime string, currentTime string, alertType string) (bool,bool) {
+	if alertType == "" || alertType == " "{
+		return false, false
+	}
     if unit == "Minutes"{
 		if timeFrame > 0{
 			if operator == "gt"{
@@ -442,9 +451,10 @@ func checkTimeFrameAndSendNotification(unit string,timeFrame float64, operator s
 				}
 			}
 			if operator == "na"{
-				return false, true
+				return true, true
 			}
 		}
+
 	} else if unit == "Hours"{
 		if timeFrame > 0{
 			if operator == "gt"{
@@ -526,7 +536,8 @@ func checkTimeFrameAndSendNotification(unit string,timeFrame float64, operator s
 				}
 			}
 			if operator == "na"{
-				return false, true
+				fmt.Println("Am here at na")
+				return true, true
 			}
 		}
 	}

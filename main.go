@@ -20,9 +20,9 @@ import (
 
 
 func main() {
-	//os.Setenv("ETCD_ADDR", "http://localhost:2379, http://localhost:2379")
-	//os.Setenv("ALERT_MANAGER_ENDPOINTS","http://localhost:9093")
-	//os.Setenv("RULESET_FILEPATH","/events.xml")
+	os.Setenv("ETCD_ADDR", "http://localhost:2379, http://localhost:2379")
+	os.Setenv("ALERT_MANAGER_ENDPOINTS","http://localhost:9093")
+	os.Setenv("RULESET_FILEPATH","dsl/events.xml")
 	r := mux.NewRouter().StrictSlash(false)
 	mainRoutes := r.PathPrefix("/api/v1/rule_engine").Subrouter()
 	ruleSet := helpers.RuleSet{}

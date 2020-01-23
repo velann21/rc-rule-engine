@@ -8,7 +8,7 @@
                 and (gt .models.AddNode.EventOccured 5) |
                 and (eq .models.AddNode.ServiceName "RM") |
                 .models.AddNode.SetAlertType "Mail" |
-                .models.AddNode.SetTimeFrame "lt" "Minutes" 1.0
+                .models.AddNode.SetTimeFrame "lt" "Hours" 20
             </r>
             <r>end</r>
         </rule>
