@@ -200,7 +200,8 @@ func ExecuteEventForNotification(){
 				}
 				if shouldAlertTriggered{
 					alertManagerFactoryProd := helpers.AlertManagerFactoryProducer{}
-					alertManagerFactoryProd.GetAlertManagerFactory(helpers.PrometheusAMC).GetAlertType("Mail").Alert(map[string]string{"alertname":"testalert"})
+					alertManagerFactoryProd.GetAlertManagerFactory(helpers.PrometheusAMC).GetAlertType("Mail").Alert(map[string]string{
+						"alertname":"testalert","EventsOccured":string(task.EventOccured),"ErrorCode":task.ErrorCode,"TraceID":task.TraceID,"EventType":task.EventType,"ServiceName":task.ServiceName, "severity":"warning"})
 				}
 				if isDeleteApproved{
 					err = dao.DeleteEvent(context.Background(), etcdConnection, task.EventType)
@@ -229,7 +230,8 @@ func ExecuteEventForNotification(){
 				}
 				if shouldAlertTriggered{
 					alertManagerFactoryProd := helpers.AlertManagerFactoryProducer{}
-					alertManagerFactoryProd.GetAlertManagerFactory(helpers.PrometheusAMC).GetAlertType("Mail").Alert(map[string]string{"alertname":"testalert"})
+					alertManagerFactoryProd.GetAlertManagerFactory(helpers.PrometheusAMC).GetAlertType("Mail").Alert(map[string]string{
+						"alertname":"testalert","EventsOccured":string(task.EventOccured),"ErrorCode":task.ErrorCode,"TraceID":task.TraceID,"EventType":task.EventType,"ServiceName":task.ServiceName,"severity":"warning"})
 				}
 				if isDeleteApproved{
 					err = dao.DeleteEvent(context.Background(), etcdConnection, task.EventType)
@@ -259,7 +261,8 @@ func ExecuteEventForNotification(){
 				if shouldAlertTriggered{
 					fmt.Println("Sending an Email")
 					alertManagerFactoryProd := helpers.AlertManagerFactoryProducer{}
-					alertManagerFactoryProd.GetAlertManagerFactory(helpers.PrometheusAMC).GetAlertType("Mail").Alert(map[string]string{"alertname":"testalert"})
+					alertManagerFactoryProd.GetAlertManagerFactory(helpers.PrometheusAMC).GetAlertType("Mail").Alert(map[string]string{
+						"alertname":"testalert","EventsOccured":string(task.EventOccured),"ErrorCode":task.ErrorCode,"TraceID":task.TraceID,"EventType":task.EventType,"ServiceName":task.ServiceName, "severity":"warning"})
 				}
 				if isDeleteApproved{
 					err = dao.DeleteEvent(context.Background(), etcdConnection, task.EventType)
@@ -286,7 +289,8 @@ func ExecuteEventForNotification(){
 				}
 				if shouldAlertTriggered{
 					alertManagerFactoryProd := helpers.AlertManagerFactoryProducer{}
-					alertManagerFactoryProd.GetAlertManagerFactory(helpers.PrometheusAMC).GetAlertType("Mail").Alert(map[string]string{"alertname":"testalert"})
+					alertManagerFactoryProd.GetAlertManagerFactory(helpers.PrometheusAMC).GetAlertType("Mail").Alert(map[string]string{
+						"alertname":"testalert","EventsOccured":string(task.EventOccured),"ErrorCode":task.ErrorCode,"TraceID":task.TraceID,"EventType":task.EventType,"ServiceName":task.ServiceName, "severity":"warning"})
 				}
 				fmt.Println("IsDelete Approved", isDeleteApproved)
 				fmt.Println(shouldAlertTriggered)
@@ -316,7 +320,8 @@ func ExecuteEventForNotification(){
 				}
 				if shouldAlertTriggered{
 					alertManagerFactoryProd := helpers.AlertManagerFactoryProducer{}
-					alertManagerFactoryProd.GetAlertManagerFactory(helpers.PrometheusAMC).GetAlertType("Mail").Alert(map[string]string{"alertname":"testalert"})
+					alertManagerFactoryProd.GetAlertManagerFactory(helpers.PrometheusAMC).GetAlertType("Mail").Alert(map[string]string{
+						"alertname":"testalert","EventsOccured":string(task.EventOccured),"ErrorCode":task.ErrorCode,"TraceID":task.TraceID,"EventType":task.EventType,"ServiceName":task.ServiceName, "severity":"warning"})
 				}
 				if isDeleteApproved{
 					err = dao.DeleteEvent(context.Background(), etcdConnection, task.EventType)
@@ -343,7 +348,10 @@ func ExecuteEventForNotification(){
 				}
 				if shouldAlertTriggered{
                     alertManagerFactoryProd := helpers.AlertManagerFactoryProducer{}
-					alertManagerFactoryProd.GetAlertManagerFactory(helpers.PrometheusAMC).GetAlertType("Mail").Alert(map[string]string{"alertname":"testalert"})
+
+					alertManagerFactoryProd.GetAlertManagerFactory(helpers.PrometheusAMC).GetAlertType("Mail").Alert(map[string]string{
+						"alertname":"eventsbasedalert","EventsOccured":string(task.EventOccured),"ErrorCode":task.ErrorCode,"TraceID":task.TraceID,"EventType":task.EventType,"ServiceName":task.ServiceName,
+						"severity":"warning"})
 				}
 				if isDeleteApproved{
 					err = dao.DeleteEvent(context.Background(), etcdConnection, task.EventType)

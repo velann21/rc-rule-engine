@@ -2,9 +2,8 @@ package responses
 
 import (
 	"encoding/json"
-	"log"
-	"net/http"
 	"gitlab.reynencourt.com/reynen-court/rc-rules-engine/helpers"
+	"net/http"
 )
 
 // ErrorResponse response for error
@@ -36,7 +35,6 @@ func HandleError(rw http.ResponseWriter, err error) {
 		response.Message = "Something Went Wrong"
 		response.Status = http.StatusText(http.StatusInternalServerError)
 	}
-	log.Println(helpers.ErrInvalidRequest)
 
 	json.NewEncoder(rw).Encode(response)
 	return

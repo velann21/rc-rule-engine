@@ -2,10 +2,11 @@ package database
 
 import (
 	"github.com/coreos/etcd/clientv3"
-	//"go.etcd.io/etcd/pkg/transport"
 	"os"
 	"strings"
 	"time"
+	"go.etcd.io/etcd/pkg/transport"
+
 )
 const (
 	ClientPEM = "/mnt/etcd/ssl/certs/client.pem"
@@ -16,21 +17,21 @@ var etcdConnection  *clientv3.Client
 func ConnectEtcd() (*clientv3.Client, error){
 
 	etcdUrl := strings.Split(os.Getenv("ETCD_ADDR"), ",")
-	//tlsInfo := transport.TLSInfo{
-	//	CertFile:      ClientPEM,
-	//	KeyFile:       ClientKey,
-	//	TrustedCAFile: TrustedCA,
-	//}
-	//
-	//tlsConfig, err := tlsInfo.ClientConfig()
-	//if err != nil {
-	//	return nil, err
-	//}
+	tlsInfo := transport.TLSInfo{
+		CertFile:      ClientPEM,
+		KeyFile:       ClientKey,
+		TrustedCAFile: TrustedCA,
+	}
+
+	tlsConfig, err := tlsInfo.ClientConfig()
+	if err != nil {
+		return nil, err
+	}
 
 	cfg := clientv3.Config{
 		Endpoints:   etcdUrl,
 		DialTimeout: 5 * time.Second,
-		//TLS:         tlsConfig,
+		TLS:         tlsConfig,
 	}
 
 	client, err := clientv3.New(cfg)

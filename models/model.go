@@ -34,14 +34,15 @@ type SyncApps struct {
 }
 
 
-func (eventsRequest *SyncApps) PopulateSyncApps(body io.ReadCloser) error {
+func (eventsRequest *SyncApps) PopulateSyncApps(body io.ReadCloser) (error) {
 	decoder := json.NewDecoder(body)
 	err := decoder.Decode(eventsRequest)
-	eventsRequest.Operator = "na"
 	if err != nil {
 		log.Println("Error While Populate the SyncApps struct")
 		return helpers.ErrInvalidRequest
 	}
+	eventsRequest.Operator = "na"
+	eventsRequest.EventOccured = 1
 	return nil
 }
 
@@ -136,13 +137,14 @@ type DeployApps struct {
 
 
 func (eventsRequest *DeployApps) PopulateDeployApps(body io.ReadCloser) error {
-	eventsRequest.Operator = "na"
 	decoder := json.NewDecoder(body)
 	err := decoder.Decode(eventsRequest)
 	if err != nil {
 		log.Println("Error While Populate the SyncApps struct")
 		return helpers.ErrInvalidRequest
 	}
+	eventsRequest.Operator = "na"
+	eventsRequest.EventOccured = 1
 	return nil
 }
 
@@ -245,13 +247,14 @@ type CreateCluster struct {
 
 
 func (eventsRequest *CreateCluster) PopulateCreateCluster(body io.ReadCloser) error {
-	eventsRequest.Operator = "na"
 	decoder := json.NewDecoder(body)
 	err := decoder.Decode(eventsRequest)
 	if err != nil {
 		log.Println("Error While Populate the SyncApps struct")
 		return helpers.ErrInvalidRequest
 	}
+	eventsRequest.Operator = "na"
+	eventsRequest.EventOccured = 1
 	return nil
 }
 
@@ -346,13 +349,14 @@ type DeleteCluster struct {
 
 
 func (eventsRequest *DeleteCluster) PopulateDeleteCluster(body io.ReadCloser) error {
-	eventsRequest.Operator = "na"
 	decoder := json.NewDecoder(body)
 	err := decoder.Decode(eventsRequest)
 	if err != nil {
 		log.Println("Error While Populate the SyncApps struct")
 		return helpers.ErrInvalidRequest
 	}
+	eventsRequest.Operator = "na"
+	eventsRequest.EventOccured = 1
 	return nil
 }
 
@@ -446,13 +450,15 @@ type AddNode struct {
 
 
 func (eventsRequest *AddNode) PopulateAddNode(body io.ReadCloser) error {
-	eventsRequest.Operator = "na"
+
 	decoder := json.NewDecoder(body)
 	err := decoder.Decode(eventsRequest)
 	if err != nil {
 		log.Println("Error While Populate the SyncApps struct")
 		return helpers.ErrInvalidRequest
 	}
+	eventsRequest.Operator = "na"
+	eventsRequest.EventOccured = 1
 	return nil
 }
 
@@ -548,13 +554,14 @@ type DeleteNode struct {
 
 
 func (eventsRequest *DeleteNode) PopulateDeleteNode(body io.ReadCloser) error {
-	eventsRequest.Operator = "na"
 	decoder := json.NewDecoder(body)
 	err := decoder.Decode(eventsRequest)
 	if err != nil {
 		log.Println("Error While Populate the SyncApps struct")
 		return helpers.ErrInvalidRequest
 	}
+	eventsRequest.Operator = "na"
+	eventsRequest.EventOccured = 1
 	return nil
 }
 

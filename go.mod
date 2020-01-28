@@ -10,7 +10,8 @@ require (
 	github.com/prometheus/procfs v0.0.2 // indirect
 	github.com/velann21/roulette v1.1.2
 	gitlab.reynencourt.com/reynen-court/rc-common-lib v1.2.118-ga3
-	gitlab.reynencourt.com/reynen-court/rc-lawfirm-datacollector v0.0.10
+	gitlab.reynencourt.com/reynen-court/rc-lawfirm-datacollector v0.0.10 // indirect
+	go.etcd.io/etcd v0.0.0-20190410231651-c7c689452735
 	google.golang.org/appengine v1.6.0 // indirect
 	k8s.io/klog v0.3.2 // indirect
 )

@@ -20,16 +20,16 @@ import (
 
 
 func main() {
-	os.Setenv("ETCD_ADDR", "http://localhost:2379, http://localhost:2379")
-	os.Setenv("ALERT_MANAGER_ENDPOINTS","http://localhost:9093")
-	os.Setenv("RULESET_FILEPATH","dsl/events.xml")
+	//os.Setenv("ETCD_ADDR", "http://localhost:2379, http://localhost:2379")
+	//os.Setenv("ALERT_MANAGER_ENDPOINTS","http://localhost:9093")
+	//os.Setenv("RULESET_FILEPATH","dsl/events.xml")
+	//etcdAddresses := strings.Split(os.Getenv("ETCD_ADDR"), ",")
 	r := mux.NewRouter().StrictSlash(false)
 	mainRoutes := r.PathPrefix("/api/v1/rule_engine").Subrouter()
 	ruleSet := helpers.RuleSet{}
-	//etcdAddresses := strings.Split(os.Getenv("ETCD_ADDR"), ",")
 	_, err := database.ConnectEtcd()
 	if err != nil{
-		log.Println("Etcd may be down")
+		log.Println("Etcd may be down reason: "+err.Error())
 		os.Exit(3)
 	}
 	go service.ExecuteEventForNotification()
