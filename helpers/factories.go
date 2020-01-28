@@ -21,18 +21,21 @@ type PromethuesMail struct {
 }
 
 func (mail *PromethuesMail) Alert(metaInformation map[string]string) {
-	p := prometheus.New(os.Getenv("ALERT_MANAGER_ENDPOINTS"))
-	fmt.Println("Alert Sent")
-	err := p.AddAlerts(context.Background(), &prometheus.Alert{
-		Label: metaInformation,
-		Annotation: map[string]string{"message":"test"},
-		StartedAt:time.Now().UTC().Format(time.RFC3339Nano),
-		EndsAt:time.Now().Add(10*time.Minute).UTC().Format(time.RFC3339Nano),
-		GeneratorURL:"test",
-	})
-	if err != nil {
-		log.Error("Something wrong while sending an alert")
-	}
+	go func(){
+		p := prometheus.New(os.Getenv("ALERT_MANAGER_ENDPOINTS"))
+		fmt.Println("Alert Sent")
+		err := p.AddAlerts(context.Background(), &prometheus.Alert{
+			Label: metaInformation,
+			Annotation: map[string]string{"message":"test"},
+			StartedAt:time.Now().UTC().Format(time.RFC3339Nano),
+			EndsAt:time.Now().Add(10*time.Minute).UTC().Format(time.RFC3339Nano),
+			GeneratorURL:"test",
+		})
+		if err != nil {
+			log.Error("Something wrong while sending an alert")
+		}
+	}()
+
 }
 
 type OtherMail struct {
