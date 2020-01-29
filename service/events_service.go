@@ -9,12 +9,12 @@ import (
 	dbModel "gitlab.reynencourt.com/reynen-court/rc-rules-engine/entities/database_models"
 	"gitlab.reynencourt.com/reynen-court/rc-rules-engine/helpers"
 	requests "gitlab.reynencourt.com/reynen-court/rc-rules-engine/models"
+	"strconv"
 	"time"
 )
 
 func SyncAppsEvents(ctx context.Context, eventsRequest *requests.SyncApps) error {
 	ruleSetObj := helpers.GetRuleSetObject()
-	fmt.Println(ruleSetObj)
 	etcdConnection := database.GetEtcdConnection()
 	resp, err := dao.GetEvent(ctx, etcdConnection, eventsRequest.EventType)
 	if err != nil{
@@ -186,6 +186,7 @@ func takeEventForNotification(events interface{}){
 	}
 }
 
+
 func ExecuteEventForNotification(){
 	for {
 		select {
@@ -201,7 +202,8 @@ func ExecuteEventForNotification(){
 				}
 				if shouldAlertTriggered{
 					alertManagerFactoryProd := helpers.AlertManagerFactoryProducer{}
-					alertManagerFactoryProd.GetAlertManagerFactory(helpers.PrometheusAMC).GetAlertType("Mail").Alert(map[string]string{"alertname":"testalert"})
+					alertManagerFactoryProd.GetAlertManagerFactory(helpers.PrometheusAMC).GetAlertType("Mail").Alert(map[string]string{
+						"alertname":"testalert","EventsOccured":strconv.Itoa(task.EventOccured),"ErrorCode":task.ErrorCode,"TraceID":task.TraceID,"EventType":task.EventType,"ServiceName":task.ServiceName})
 				}
 				if isDeleteApproved{
 					err = dao.DeleteEvent(context.Background(), etcdConnection, task.EventType)
@@ -210,10 +212,12 @@ func ExecuteEventForNotification(){
 					}
 					return
 				}
+
 				err = dao.StoreEvent(context.Background(), etcdConnection,task.EventType, jsonData)
 				if err != nil{
 					return
 				}
+
 				return
 			}()
 		case task := <-deployAppsChan:
@@ -228,7 +232,8 @@ func ExecuteEventForNotification(){
 				}
 				if shouldAlertTriggered{
 					alertManagerFactoryProd := helpers.AlertManagerFactoryProducer{}
-					alertManagerFactoryProd.GetAlertManagerFactory(helpers.PrometheusAMC).GetAlertType("Mail").Alert(map[string]string{"alertname":"testalert"})
+					alertManagerFactoryProd.GetAlertManagerFactory(helpers.PrometheusAMC).GetAlertType("Mail").Alert(map[string]string{
+						"alertname":"testalert","EventsOccured":strconv.Itoa(task.EventOccured),"ErrorCode":task.ErrorCode,"TraceID":task.TraceID,"EventType":task.EventType,"ServiceName":task.ServiceName})
 				}
 				if isDeleteApproved{
 					err = dao.DeleteEvent(context.Background(), etcdConnection, task.EventType)
@@ -253,10 +258,13 @@ func ExecuteEventForNotification(){
 				if err != nil{
 					return
 				}
+				fmt.Println("IsDelete Approved", isDeleteApproved)
+				fmt.Println(shouldAlertTriggered)
 				if shouldAlertTriggered{
 					fmt.Println("Sending an Email")
 					alertManagerFactoryProd := helpers.AlertManagerFactoryProducer{}
-					alertManagerFactoryProd.GetAlertManagerFactory(helpers.PrometheusAMC).GetAlertType("Mail").Alert(map[string]string{"alertname":"testalert"})
+					alertManagerFactoryProd.GetAlertManagerFactory(helpers.PrometheusAMC).GetAlertType("Mail").Alert(map[string]string{
+						"alertname":"testalert","EventsOccured":strconv.Itoa(task.EventOccured),"ErrorCode":task.ErrorCode,"TraceID":task.TraceID,"EventType":task.EventType,"ServiceName":task.ServiceName})
 				}
 				if isDeleteApproved{
 					err = dao.DeleteEvent(context.Background(), etcdConnection, task.EventType)
@@ -283,9 +291,13 @@ func ExecuteEventForNotification(){
 				}
 				if shouldAlertTriggered{
 					alertManagerFactoryProd := helpers.AlertManagerFactoryProducer{}
-					alertManagerFactoryProd.GetAlertManagerFactory(helpers.PrometheusAMC).GetAlertType("Mail").Alert(map[string]string{"alertname":"testalert"})
+					alertManagerFactoryProd.GetAlertManagerFactory(helpers.PrometheusAMC).GetAlertType("Mail").Alert(map[string]string{
+						"alertname":"testalert","EventsOccured":strconv.Itoa(task.EventOccured),"ErrorCode":task.ErrorCode,"TraceID":task.TraceID,"EventType":task.EventType,"ServiceName":task.ServiceName})
 				}
+				fmt.Println("IsDelete Approved", isDeleteApproved)
+				fmt.Println(shouldAlertTriggered)
 				if isDeleteApproved{
+
 					err = dao.DeleteEvent(context.Background(), etcdConnection, task.EventType)
 					if err != nil{
 						return
@@ -310,7 +322,8 @@ func ExecuteEventForNotification(){
 				}
 				if shouldAlertTriggered{
 					alertManagerFactoryProd := helpers.AlertManagerFactoryProducer{}
-					alertManagerFactoryProd.GetAlertManagerFactory(helpers.PrometheusAMC).GetAlertType("Mail").Alert(map[string]string{"alertname":"testalert"})
+					alertManagerFactoryProd.GetAlertManagerFactory(helpers.PrometheusAMC).GetAlertType("Mail").Alert(map[string]string{
+						"alertname":"testalert","EventsOccured":strconv.Itoa(task.EventOccured),"ErrorCode":task.ErrorCode,"TraceID":task.TraceID,"EventType":task.EventType,"ServiceName":task.ServiceName})
 				}
 				if isDeleteApproved{
 					err = dao.DeleteEvent(context.Background(), etcdConnection, task.EventType)
@@ -337,7 +350,9 @@ func ExecuteEventForNotification(){
 				}
 				if shouldAlertTriggered{
                     alertManagerFactoryProd := helpers.AlertManagerFactoryProducer{}
-					alertManagerFactoryProd.GetAlertManagerFactory(helpers.PrometheusAMC).GetAlertType("Mail").Alert(map[string]string{"alertname":"testalert"})
+
+					alertManagerFactoryProd.GetAlertManagerFactory(helpers.PrometheusAMC).GetAlertType("Mail").Alert(map[string]string{
+						"alertname":"eventsbasedalert","EventsOccured":strconv.Itoa(task.EventOccured),"ErrorCode":task.ErrorCode,"TraceID":task.TraceID,"EventType":task.EventType,"ServiceName":task.ServiceName})
 				}
 				if isDeleteApproved{
 					err = dao.DeleteEvent(context.Background(), etcdConnection, task.EventType)
@@ -358,6 +373,9 @@ func ExecuteEventForNotification(){
 
 func checkTimeFrameAndSendNotification(unit string,timeFrame float64, operator string,
 	lastTime string, currentTime string, alertType string) (bool,bool) {
+	if alertType == "" || alertType == " "{
+		return false, false
+	}
     if unit == "Minutes"{
 		if timeFrame > 0{
 			if operator == "gt"{
@@ -442,9 +460,10 @@ func checkTimeFrameAndSendNotification(unit string,timeFrame float64, operator s
 				}
 			}
 			if operator == "na"{
-				return false, true
+				return true, true
 			}
 		}
+
 	} else if unit == "Hours"{
 		if timeFrame > 0{
 			if operator == "gt"{
@@ -526,7 +545,8 @@ func checkTimeFrameAndSendNotification(unit string,timeFrame float64, operator s
 				}
 			}
 			if operator == "na"{
-				return false, true
+				fmt.Println("Am here at na")
+				return true, true
 			}
 		}
 	}

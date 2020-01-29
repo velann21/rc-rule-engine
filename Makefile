@@ -18,6 +18,12 @@ docker: docker-build-prep
 docker-build-cleanup:
 	rm docker/rc-rules-engine
 
+push-rules:
+	tar czf events_rules.tar.gz dsl
+	ssh -i ~/rc-dev.pem ubuntu@ec2-18-216-29-160.us-east-2.compute.amazonaws.com "sudo rm -rf /tmp/*"
+	scp -r -i ~/rc-dev.pem events_rules.tar.gz ubuntu@ec2-18-216-29-160.us-east-2.compute.amazonaws.com:/tmp/
+	ssh -i ~/rc-dev.pem ubuntu@ec2-18-216-29-160.us-east-2.compute.amazonaws.com "sudo cp /tmp/events_rules.tar.gz /var/www/html/eventalertrules/events_rules.tar.gz"
+
 release: update build docker-build-prep
 	git tag `cat .version`
 	git push --tags

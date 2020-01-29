@@ -1,43 +1,196 @@
 <roulette>
     <ruleset name="eventRules" dataKey="MyData" resultKey="result" filterTypes="models.AddNode"
              filterStrict="false" prioritiesCount="all"  workflow="AddNodeCycle">
-        <rule name="addNodeRules" priority="3">
+        <rule name="addNodeRules" priority="2">
             <r>with .MyData</r>
             <r>
                 eq .models.AddNode.EventType "AddNode"|
-                and (gt .models.AddNode.EventOccured 5) |
-                and (eq .models.AddNode.ServiceName "DM") |
+                and (eq .models.AddNode.ServiceName "CB") |
+                and (eq .models.AddNode.ActionType "Request") |
+                and (gt .models.AddNode.EventOccured 10) |
                 .models.AddNode.SetAlertType "Mail" |
-                .models.AddNode.SetTimeFrame "lt" "Minutes" 1.0
+                .models.AddNode.SetTimeFrame "lt" "Hours" 1.0
             </r>
             <r>end</r>
         </rule>
     </ruleset>
 
-    <ruleset name="eventRules2" dataKey="MyData" resultKey="result" filterTypes="models.SyncApps"
-             filterStrict="false" prioritiesCount="all"  workflow="SyncAppsCycle">
-        <rule name="SyncAppsRules" priority="2">
-            <r>with .MyData</r>
-            <r>
-                eq .models.SyncApps.EventType "SyncApps"|
-                and (gt .models.SyncApps.EventOccured 2) |
-                .models.SyncApps.SetAlertType "Mail" |
-                .models.SyncApps.SetTimeFrame "lt" "Minutes" 1.0
-            </r>
-            <r>end</r>
-        </rule>
-    </ruleset>
-
-    <ruleset name="eventRules3" dataKey="MyData" resultKey="result" filterTypes="models.AddNode"
+    <ruleset name="eventRules2" dataKey="MyData" resultKey="result" filterTypes="models.AddNode"
              filterStrict="false" prioritiesCount="all"  workflow="AddNodeFailedCycle">
         <rule name="addNodeFailedRules" priority="1">
             <r>with .MyData</r>
             <r>
                 eq .models.AddNode.EventType "AddNodeFailed"|
-                and (gt .models.AddNode.EventOccured 5) |
-                and (eq .models.AddNode.ServiceName "DM") |
+                and (eq .models.AddNode.ServiceName "RM") |
+                or (eq .models.AddNode.ServiceName "CB") |
+                and (eq .models.AddNode.ActionType "Response") |
+                and (ge .models.AddNode.EventOccured 1) |
                 .models.AddNode.SetAlertType "Mail" |
-                .models.AddNode.SetTimeFrame "lt" "Minutes" 1.0
+                .models.AddNode.SetTimeFrame "na" "Hours" 1.0
+            </r>
+            <r>end</r>
+        </rule>
+    </ruleset>
+
+    <ruleset name="eventRules3" dataKey="MyData" resultKey="result" filterTypes="models.SyncApps"
+             filterStrict="false" prioritiesCount="all"  workflow="syncAppsCycle">
+        <rule name="syncAppsRules" priority="4">
+            <r>with .MyData</r>
+            <r>
+                eq .models.SyncApps.EventType "SyncApps"|
+                and (eq .models.SyncApps.ServiceName "CB") |
+                and (eq .models.SyncApps.ActionType "Request") |
+                and (gt .models.SyncApps.EventOccured 10) |
+                .models.SyncApps.SetAlertType "Mail" |
+                .models.SyncApps.SetTimeFrame "lt" "Hours" 1.0
+            </r>
+            <r>end</r>
+        </rule>
+    </ruleset>
+
+    <ruleset name="eventRules4" dataKey="MyData" resultKey="result" filterTypes="models.SyncApps"
+             filterStrict="false" prioritiesCount="all"  workflow="SyncAppsFailedCycle">
+        <rule name="syncAppFailedRules" priority="3">
+            <r>with .MyData</r>
+            <r>
+                eq .models.SyncApps.EventType "SyncAppsFailed"|
+                and (eq .models.SyncApps.ServiceName "DM") |
+                or (eq .models.SyncApps.ServiceName "CB") |
+                and (eq .models.SyncApps.ActionType "Response") |
+                and (ge .models.SyncApps.EventOccured 1) |
+                .models.SyncApps.SetAlertType "Mail" |
+                .models.SyncApps.SetTimeFrame "na" "Hours" 1.0
+            </r>
+            <r>end</r>
+        </rule>
+    </ruleset>
+
+    <ruleset name="eventRules5" dataKey="MyData" resultKey="result" filterTypes="models.DeployApps"
+             filterStrict="false" prioritiesCount="all"  workflow="DeployAppsCycle">
+        <rule name="DeployAppsRules" priority="6">
+            <r>with .MyData</r>
+            <r>
+                eq .models.DeployApps.EventType "DeployApp"|
+                and (eq .models.DeployApps.ServiceName "CB") |
+                and (eq .models.DeployApps.ActionType "Request") |
+                and (gt .models.DeployApps.EventOccured 10) |
+                .models.DeployApps.SetAlertType "Mail" |
+                .models.DeployApps.SetTimeFrame "lt" "Hours" 1.0
+            </r>
+            <r>end</r>
+        </rule>
+    </ruleset>
+
+    <ruleset name="eventRules6" dataKey="MyData" resultKey="result" filterTypes="models.DeployApps"
+             filterStrict="false" prioritiesCount="all"  workflow="DeployAppsFailedCycle">
+        <rule name="DeployAppsFailedRules" priority="5">
+            <r>with .MyData</r>
+            <r>
+                eq .models.DeployApps.EventType "DeployAppFailed"|
+                and (eq .models.DeployApps.ServiceName "DM") |
+                or (eq .models.DeployApps.ServiceName "CB") |
+                and (eq .models.DeployApps.ActionType "Response") |
+                and (ge .models.DeployApps.EventOccured 1) |
+                .models.DeployApps.SetAlertType "Mail" |
+                .models.DeployApps.SetTimeFrame "na" "Hours" 1.0
+            </r>
+            <r>end</r>
+        </rule>
+    </ruleset>
+    <ruleset name="eventRules7" dataKey="MyData" resultKey="result" filterTypes="models.DeleteNode"
+             filterStrict="false" prioritiesCount="all"  workflow="DeleteNodeCycle">
+        <rule name="DeleteNodeRules" priority="8">
+            <r>with .MyData</r>
+            <r>
+                eq .models.DeleteNode.EventType "DeleteNode"|
+                and (eq .models.DeleteNode.ServiceName "CB") |
+                and (eq .models.DeleteNode.ActionType "Request") |
+                and (gt .models.DeleteNode.EventOccured 10) |
+                .models.DeleteNode.SetAlertType "Mail" |
+                .models.DeleteNode.SetTimeFrame "lt" "Hours" 1.0
+            </r>
+            <r>end</r>
+        </rule>
+    </ruleset>
+
+    <ruleset name="eventRules8" dataKey="MyData" resultKey="result" filterTypes="models.DeleteNode"
+             filterStrict="false" prioritiesCount="all"  workflow="DeleteNodeFailedCycle">
+        <rule name="addNodeFailedRules" priority="7">
+            <r>with .MyData</r>
+            <r>
+                eq .models.DeleteNode.EventType "DeleteNodeFailed"|
+                and (eq .models.DeleteNode.ServiceName "RM") |
+                or (eq .models.DeleteNode.ServiceName "CB") |
+                and (eq .models.DeleteNode.ActionType "Response") |
+                and (ge .models.DeleteNode.EventOccured 1) |
+                .models.DeleteNode.SetAlertType "Mail" |
+                .models.DeleteNode.SetTimeFrame "na" "Hours" 1.0
+            </r>
+            <r>end</r>
+        </rule>
+    </ruleset>
+
+    <ruleset name="eventRules9" dataKey="MyData" resultKey="result" filterTypes="models.CreateCluster"
+             filterStrict="false" prioritiesCount="all"  workflow="CreateClusterCycle">
+        <rule name="CreateClusterRules" priority="10">
+            <r>with .MyData</r>
+            <r>
+                eq .models.CreateCluster.EventType "CreateCluster"|
+                and (eq .models.CreateCluster.ServiceName "CB") |
+                and (eq .models.CreateCluster.ActionType "Request") |
+                and (gt .models.CreateCluster.EventOccured 10) |
+                .models.CreateCluster.SetAlertType "Mail" |
+                .models.CreateCluster.SetTimeFrame "lt" "Hours" 1.0
+            </r>
+            <r>end</r>
+        </rule>
+    </ruleset>
+
+    <ruleset name="eventRules10" dataKey="MyData" resultKey="result" filterTypes="models.CreateCluster"
+             filterStrict="false" prioritiesCount="all"  workflow="CreateClusterFailedCycle">
+        <rule name="CreateClusterFailedRules" priority="9">
+            <r>with .MyData</r>
+            <r>
+                eq .models.CreateCluster.EventType "CreateClusterFailed"|
+                and (eq .models.CreateCluster.ServiceName "RM") |
+                or (eq .models.CreateCluster.ServiceName "CB") |
+                and (eq .models.CreateCluster.ActionType "Response") |
+                and (ge .models.CreateCluster.EventOccured 1) |
+                .models.CreateCluster.SetAlertType "Mail" |
+                .models.CreateCluster.SetTimeFrame "na" "Hours" 1.0
+            </r>
+            <r>end</r>
+        </rule>
+    </ruleset>
+
+    <ruleset name="eventRules11" dataKey="MyData" resultKey="result" filterTypes="models.DeleteCluster"
+             filterStrict="false" prioritiesCount="all"  workflow="DeleteClusterCycle">
+        <rule name="DeleteClusterRules" priority="12">
+            <r>with .MyData</r>
+            <r>
+                eq .models.DeleteCluster.EventType "DeleteCluster"|
+                and (eq .models.DeleteCluster.ServiceName "CB") |
+                and (eq .models.DeleteCluster.ActionType "Request") |
+                and (gt .models.DeleteCluster.EventOccured 10) |
+                .models.DeleteCluster.SetAlertType "Mail" |
+                .models.DeleteCluster.SetTimeFrame "lt" "Hours" 1.0
+            </r>
+            <r>end</r>
+        </rule>
+    </ruleset>
+
+    <ruleset name="eventRules12" dataKey="MyData" resultKey="result" filterTypes="models.DeleteCluster"
+             filterStrict="false" prioritiesCount="all"  workflow="DeleteClusterFailedCycle">
+        <rule name="DeleteClusterFailedRules" priority="11">
+            <r>with .MyData</r>
+            <r>
+                eq .models.DeleteCluster.EventType "DeleteClusterFailed"|
+                and (eq .models.DeleteCluster.ServiceName "RM") |
+                or (eq .models.DeleteCluster.ServiceName "CB") |
+                and (eq .models.DeleteCluster.ActionType "Response") |
+                and (ge .models.DeleteCluster.EventOccured 1) |
+                .models.DeleteCluster.SetAlertType "Mail" |
+                .models.DeleteCluster.SetTimeFrame "na" "Hours" 1.0
             </r>
             <r>end</r>
         </rule>

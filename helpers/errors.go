@@ -4,8 +4,8 @@ import "errors"
 
 var (
 	// ErrParamMissing required field missing error
-	ErrInvalidRequest = errors.New("Invalid Request")
+	ErrInvalidRequest = errors.New("invalid request")
 	ErrParamMissing   = errors.New("paramMissing")
-	ErrInvalidField   = errors.New("Invalid Field")
-	ErrSomeThingWentWrng   = errors.New("Something Went Wrong")
+	ErrInvalidField   = errors.New("invalid field")
+	ErrSomeThingWentWrng   = errors.New("something went wrong")
 )
