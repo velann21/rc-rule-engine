@@ -2,7 +2,8 @@ package models
 
 import (
 	"encoding/json"
-	"gitlab.reynencourt.com/reynen-court/rc-lawfirm-datacollector/helpers"
+	eventsLogger "gitlab.reynencourt.com/reynen-court/rc-common-lib/events_logger"
+	"gitlab.reynencourt.com/reynen-court/rc-rules-engine/helpers"
 	"io"
 	"log"
 	"os"
@@ -16,6 +17,7 @@ const (
 	CreateClusterFailed = "CreateClusterFailed"
 	DeleteClusterFailed = "DeleteClusterFailed"
 )
+
 type SyncApps struct {
 	EventType    string `json:"eventType"`
 	EventOccured int    `json:"eventOccured"`
@@ -32,13 +34,15 @@ type SyncApps struct {
 }
 
 
-func (eventsRequest *SyncApps) PopulateSyncApps(body io.ReadCloser) error {
+func (eventsRequest *SyncApps) PopulateSyncApps(body io.ReadCloser) (error) {
 	decoder := json.NewDecoder(body)
 	err := decoder.Decode(eventsRequest)
 	if err != nil {
 		log.Println("Error While Populate the SyncApps struct")
 		return helpers.ErrInvalidRequest
 	}
+	eventsRequest.Operator = "na"
+	eventsRequest.EventOccured = 1
 	return nil
 }
 
@@ -71,8 +75,24 @@ func (eventsRequest *SyncApps) ValidateSyncAppsRequest() error {
 	if eventsRequest.TraceID == "" || eventsRequest.TraceID == " "{
 		return helpers.ErrInvalidRequest
 	}
-	if eventsRequest.ErrorCode != ""{
+	if eventsRequest.ActionType == "Request" && eventsRequest.ServiceName != eventsLogger.SvcControllerBackend{
+		return helpers.ErrInvalidRequest
+	}
+	if eventsRequest.ErrorCode != "" && eventsRequest.ActionType == "Request"{
+		return helpers.ErrInvalidRequest
+	}
+	if eventsRequest.ErrorCode == "" {
+		if eventsRequest.ActionType == "Response"{
+			return helpers.ErrInvalidRequest
+		}
+
+	}
+	if eventsRequest.ErrorCode != "" {
+	   if eventsRequest.ServiceName == eventsLogger.SvcDeploymentManager || eventsRequest.ServiceName == eventsLogger.SvcControllerBackend{
 		eventsRequest.EventType = SyncAppFailed
+	}else{
+		return helpers.ErrInvalidRequest
+	   }
 	}
 	return nil
 }
@@ -123,6 +143,8 @@ func (eventsRequest *DeployApps) PopulateDeployApps(body io.ReadCloser) error {
 		log.Println("Error While Populate the SyncApps struct")
 		return helpers.ErrInvalidRequest
 	}
+	eventsRequest.Operator = "na"
+	eventsRequest.EventOccured = 1
 	return nil
 }
 
@@ -152,12 +174,35 @@ func (eventsRequest *DeployApps) ValidateDeployAppsRequest() error {
 	if eventsRequest.ActionType == "" || eventsRequest.ActionType == " "{
 		return helpers.ErrInvalidRequest
 	}
+	if eventsRequest.ErrorCode != "" && eventsRequest.ActionType == "Request"{
+		return helpers.ErrInvalidRequest
+	}
 	if eventsRequest.TraceID == "" || eventsRequest.TraceID == " "{
 		return helpers.ErrInvalidRequest
 	}
-	if eventsRequest.ErrorCode != ""{
-		eventsRequest.EventType = DeployAppFailed
+	if eventsRequest.ErrorCode == "" {
+		if eventsRequest.ActionType == "Response"{
+			return helpers.ErrInvalidRequest
+		}
+
 	}
+	if eventsRequest.ActionType == "Request" && eventsRequest.ServiceName != eventsLogger.SvcControllerBackend{
+		return helpers.ErrInvalidRequest
+	}
+	if eventsRequest.ErrorCode == "" {
+		if eventsRequest.ActionType == "Response"{
+			return helpers.ErrInvalidRequest
+		}
+
+	}
+	if eventsRequest.ErrorCode != "" {
+		if eventsRequest.ServiceName == eventsLogger.SvcDeploymentManager || eventsRequest.ServiceName == eventsLogger.SvcControllerBackend{
+			eventsRequest.EventType = DeployAppFailed
+		}else{
+			return helpers.ErrInvalidRequest
+		}
+	}
+
 	return nil
 
 }
@@ -208,6 +253,8 @@ func (eventsRequest *CreateCluster) PopulateCreateCluster(body io.ReadCloser) er
 		log.Println("Error While Populate the SyncApps struct")
 		return helpers.ErrInvalidRequest
 	}
+	eventsRequest.Operator = "na"
+	eventsRequest.EventOccured = 1
 	return nil
 }
 
@@ -237,14 +284,29 @@ func (eventsRequest *CreateCluster) ValidateCreateClusterRequest() error {
 	if eventsRequest.ActionType == "" || eventsRequest.ActionType == " "{
 		return helpers.ErrInvalidRequest
 	}
+	if eventsRequest.ErrorCode != "" && eventsRequest.ActionType == "Request"{
+		return helpers.ErrInvalidRequest
+	}
 	if eventsRequest.TraceID == "" || eventsRequest.TraceID == " "{
 		return helpers.ErrInvalidRequest
 	}
-	if eventsRequest.ErrorCode != ""{
-		eventsRequest.EventType = CreateClusterFailed
+	if eventsRequest.ActionType == "Request" && eventsRequest.ServiceName != eventsLogger.SvcControllerBackend{
+		return helpers.ErrInvalidRequest
+	}
+	if eventsRequest.ErrorCode == "" {
+		if eventsRequest.ActionType == "Response"{
+			return helpers.ErrInvalidRequest
+		}
+
+	}
+	if eventsRequest.ErrorCode != "" {
+		if eventsRequest.ServiceName == eventsLogger.SvcResourceManager || eventsRequest.ServiceName == eventsLogger.SvcControllerBackend{
+			eventsRequest.EventType = CreateClusterFailed
+		}else{
+			return helpers.ErrInvalidRequest
+		}
 	}
 	return nil
-
 }
 
 func (p *CreateCluster) SetAlertType(alertType string, prevVal ...bool) bool {
@@ -293,6 +355,8 @@ func (eventsRequest *DeleteCluster) PopulateDeleteCluster(body io.ReadCloser) er
 		log.Println("Error While Populate the SyncApps struct")
 		return helpers.ErrInvalidRequest
 	}
+	eventsRequest.Operator = "na"
+	eventsRequest.EventOccured = 1
 	return nil
 }
 
@@ -319,17 +383,32 @@ func (eventsRequest *DeleteCluster) ValidateDeleteClusterRequest() error {
 	if eventsRequest.DateTime == "" || eventsRequest.DateTime == " "{
 		return helpers.ErrInvalidRequest
 	}
+	if eventsRequest.ErrorCode != "" && eventsRequest.ActionType == "Request"{
+		return helpers.ErrInvalidRequest
+	}
 	if eventsRequest.ActionType == "" || eventsRequest.ActionType == " "{
 		return helpers.ErrInvalidRequest
 	}
 	if eventsRequest.TraceID == "" || eventsRequest.TraceID == " "{
 		return helpers.ErrInvalidRequest
 	}
-	if eventsRequest.ErrorCode != ""{
-		eventsRequest.EventType = DeleteClusterFailed
-	}
-	return nil
+	if eventsRequest.ErrorCode == "" {
+		if eventsRequest.ActionType == "Response"{
+			return helpers.ErrInvalidRequest
+		}
 
+	}
+	if eventsRequest.ActionType == "Request" && eventsRequest.ServiceName != eventsLogger.SvcControllerBackend{
+		return helpers.ErrInvalidRequest
+	}
+	if eventsRequest.ErrorCode != "" {
+		if eventsRequest.ServiceName == eventsLogger.SvcResourceManager || eventsRequest.ServiceName == eventsLogger.SvcControllerBackend{
+			eventsRequest.EventType = DeleteClusterFailed
+		}else{
+			return helpers.ErrInvalidRequest
+		}
+	}
+    return nil
 }
 
 func (p *DeleteCluster) SetAlertType(alertType string, prevVal ...bool) bool {
@@ -371,12 +450,15 @@ type AddNode struct {
 
 
 func (eventsRequest *AddNode) PopulateAddNode(body io.ReadCloser) error {
+
 	decoder := json.NewDecoder(body)
 	err := decoder.Decode(eventsRequest)
 	if err != nil {
 		log.Println("Error While Populate the SyncApps struct")
 		return helpers.ErrInvalidRequest
 	}
+	eventsRequest.Operator = "na"
+	eventsRequest.EventOccured = 1
 	return nil
 }
 
@@ -409,8 +491,24 @@ func (eventsRequest *AddNode) ValidateAddNodeRequest() error {
 	if eventsRequest.TraceID == "" || eventsRequest.TraceID == " "{
 		return helpers.ErrInvalidRequest
 	}
-	if eventsRequest.ErrorCode != ""{
-		eventsRequest.EventType = AddNodeFailed
+	if eventsRequest.ErrorCode != "" && eventsRequest.ActionType == "Request"{
+		return helpers.ErrInvalidRequest
+	}
+	if eventsRequest.ErrorCode == "" {
+		if eventsRequest.ActionType == "Response"{
+			return helpers.ErrInvalidRequest
+		}
+
+	}
+	if eventsRequest.ActionType == "Request" && eventsRequest.ServiceName != eventsLogger.SvcControllerBackend{
+		return helpers.ErrInvalidRequest
+	}
+	if eventsRequest.ErrorCode != "" {
+		if eventsRequest.ServiceName == eventsLogger.SvcResourceManager || eventsRequest.ServiceName == eventsLogger.SvcControllerBackend{
+			eventsRequest.EventType = AddNodeFailed
+		}else{
+			return helpers.ErrInvalidRequest
+		}
 	}
 	return nil
 
@@ -462,6 +560,8 @@ func (eventsRequest *DeleteNode) PopulateDeleteNode(body io.ReadCloser) error {
 		log.Println("Error While Populate the SyncApps struct")
 		return helpers.ErrInvalidRequest
 	}
+	eventsRequest.Operator = "na"
+	eventsRequest.EventOccured = 1
 	return nil
 }
 
@@ -494,8 +594,24 @@ func (eventsRequest *DeleteNode) ValidateDeleteNodeRequest() error {
 	if eventsRequest.TraceID == "" || eventsRequest.TraceID == " "{
 		return helpers.ErrInvalidRequest
 	}
-	if eventsRequest.ErrorCode != ""{
-		eventsRequest.EventType = DeleteNodeFailed
+	if eventsRequest.ErrorCode != "" && eventsRequest.ActionType == "Request"{
+		return helpers.ErrInvalidRequest
+	}
+	if eventsRequest.ErrorCode == "" {
+		if eventsRequest.ActionType == "Response"{
+			return helpers.ErrInvalidRequest
+		}
+
+	}
+	if eventsRequest.ActionType == "Request" && eventsRequest.ServiceName != eventsLogger.SvcControllerBackend{
+		return helpers.ErrInvalidRequest
+	}
+	if eventsRequest.ErrorCode != "" {
+		if eventsRequest.ServiceName == eventsLogger.SvcResourceManager || eventsRequest.ServiceName == eventsLogger.SvcControllerBackend{
+			eventsRequest.EventType = DeleteNodeFailed
+		}else{
+			return helpers.ErrInvalidRequest
+		}
 	}
 	return nil
 
@@ -539,6 +655,8 @@ func (reloadRuleSet *ReloadRuleSet) PopulateRuleSet(body io.ReadCloser) error {
 
 func (reloadRuleSet *ReloadRuleSet) ValidateAndResetPath(){
 	if reloadRuleSet.FilePath == ""{
+		//_, b, _, _ := runtime.Caller(0)
+		//basepath   := filepath.Dir(b)
        reloadRuleSet.FilePath = os.Getenv("RULESET_FILEPATH")
 	}
 }
