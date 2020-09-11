@@ -185,6 +185,7 @@ func takeEventForNotification(events interface{}){
 	}
 }
 
+
 func ExecuteEventForNotification(){
 	for {
 		select {
@@ -201,6 +202,7 @@ func ExecuteEventForNotification(){
 				if shouldAlertTriggered{
 					alertManagerFactoryProd := helpers.AlertManagerFactoryProducer{}
 					alertManagerFactoryProd.GetAlertManagerFactory(helpers.PrometheusAMC).GetAlertType("Mail").Alert(map[string]string{
+
 						"alertname":"testalert","EventsOccured":string(task.EventOccured),"ErrorCode":task.ErrorCode,"TraceID":task.TraceID,"EventType":task.EventType,"ServiceName":task.ServiceName, "severity":"warning"})
 				}
 				if isDeleteApproved{

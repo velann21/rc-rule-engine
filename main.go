@@ -39,4 +39,5 @@ func main() {
 	if err := http.ListenAndServe(":5010", r); err != nil {
 		log.Fatal(err)
 	}
+	log.Println("server Started")
 }

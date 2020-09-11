@@ -97,7 +97,6 @@
             <r>end</r>
         </rule>
     </ruleset>
-
     <ruleset name="eventRules7" dataKey="MyData" resultKey="result" filterTypes="models.DeleteNode"
              filterStrict="false" prioritiesCount="all"  workflow="DeleteNodeCycle">
         <rule name="DeleteNodeRules" priority="8">
