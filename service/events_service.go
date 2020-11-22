@@ -9,7 +9,6 @@ import (
 	dbModel "gitlab.reynencourt.com/reynen-court/rc-rules-engine/entities/database_models"
 	"gitlab.reynencourt.com/reynen-court/rc-rules-engine/helpers"
 	requests "gitlab.reynencourt.com/reynen-court/rc-rules-engine/models"
-	"strconv"
 	"time"
 )
 
@@ -38,7 +37,6 @@ func SyncAppsEvents(ctx context.Context, eventsRequest *requests.SyncApps) error
 
 func DeployAppsEvents(ctx context.Context, eventsRequest *requests.DeployApps) error {
 	ruleSetObj := helpers.GetRuleSetObject()
-	fmt.Println(ruleSetObj)
 	etcdConnection := database.GetEtcdConnection()
 	resp, err := dao.GetEvent(ctx, etcdConnection, eventsRequest.EventType)
 	if err != nil{
@@ -63,7 +61,6 @@ func DeployAppsEvents(ctx context.Context, eventsRequest *requests.DeployApps) e
 
 func AddNodeEvents(ctx context.Context, eventsRequest *requests.AddNode) error {
 	ruleSetObj := helpers.GetRuleSetObject()
-	fmt.Println(ruleSetObj)
 	etcdConnection := database.GetEtcdConnection()
 	resp, err := dao.GetEvent(ctx, etcdConnection, eventsRequest.EventType)
 	if err != nil{
@@ -87,7 +84,6 @@ func AddNodeEvents(ctx context.Context, eventsRequest *requests.AddNode) error {
 
 func DeleteNodeEvents(ctx context.Context, eventsRequest *requests.DeleteNode) error {
 	ruleSetObj := helpers.GetRuleSetObject()
-	fmt.Println(ruleSetObj)
 	etcdConnection := database.GetEtcdConnection()
 	resp, err := dao.GetEvent(ctx, etcdConnection, eventsRequest.EventType)
 	if err != nil{
@@ -112,7 +108,6 @@ func DeleteNodeEvents(ctx context.Context, eventsRequest *requests.DeleteNode) e
 
 func CreateClusterEvents(ctx context.Context, eventsRequest *requests.CreateCluster) error {
 	ruleSetObj := helpers.GetRuleSetObject()
-	fmt.Println(ruleSetObj)
 	etcdConnection := database.GetEtcdConnection()
 	resp, err := dao.GetEvent(ctx, etcdConnection, eventsRequest.EventType)
 	if err != nil{
@@ -203,7 +198,8 @@ func ExecuteEventForNotification(){
 				if shouldAlertTriggered{
 					alertManagerFactoryProd := helpers.AlertManagerFactoryProducer{}
 					alertManagerFactoryProd.GetAlertManagerFactory(helpers.PrometheusAMC).GetAlertType("Mail").Alert(map[string]string{
-						"alertname":"testalert","EventsOccured":strconv.Itoa(task.EventOccured),"ErrorCode":task.ErrorCode,"TraceID":task.TraceID,"EventType":task.EventType,"ServiceName":task.ServiceName})
+
+						"alertname":"testalert","EventsOccured":string(task.EventOccured),"ErrorCode":task.ErrorCode,"TraceID":task.TraceID,"EventType":task.EventType,"ServiceName":task.ServiceName, "severity":"warning"})
 				}
 				if isDeleteApproved{
 					err = dao.DeleteEvent(context.Background(), etcdConnection, task.EventType)
@@ -233,7 +229,7 @@ func ExecuteEventForNotification(){
 				if shouldAlertTriggered{
 					alertManagerFactoryProd := helpers.AlertManagerFactoryProducer{}
 					alertManagerFactoryProd.GetAlertManagerFactory(helpers.PrometheusAMC).GetAlertType("Mail").Alert(map[string]string{
-						"alertname":"testalert","EventsOccured":strconv.Itoa(task.EventOccured),"ErrorCode":task.ErrorCode,"TraceID":task.TraceID,"EventType":task.EventType,"ServiceName":task.ServiceName})
+						"alertname":"testalert","EventsOccured":string(task.EventOccured),"ErrorCode":task.ErrorCode,"TraceID":task.TraceID,"EventType":task.EventType,"ServiceName":task.ServiceName,"severity":"warning"})
 				}
 				if isDeleteApproved{
 					err = dao.DeleteEvent(context.Background(), etcdConnection, task.EventType)
@@ -264,7 +260,7 @@ func ExecuteEventForNotification(){
 					fmt.Println("Sending an Email")
 					alertManagerFactoryProd := helpers.AlertManagerFactoryProducer{}
 					alertManagerFactoryProd.GetAlertManagerFactory(helpers.PrometheusAMC).GetAlertType("Mail").Alert(map[string]string{
-						"alertname":"testalert","EventsOccured":strconv.Itoa(task.EventOccured),"ErrorCode":task.ErrorCode,"TraceID":task.TraceID,"EventType":task.EventType,"ServiceName":task.ServiceName})
+						"alertname":"testalert","EventsOccured":string(task.EventOccured),"ErrorCode":task.ErrorCode,"TraceID":task.TraceID,"EventType":task.EventType,"ServiceName":task.ServiceName, "severity":"warning"})
 				}
 				if isDeleteApproved{
 					err = dao.DeleteEvent(context.Background(), etcdConnection, task.EventType)
@@ -292,7 +288,7 @@ func ExecuteEventForNotification(){
 				if shouldAlertTriggered{
 					alertManagerFactoryProd := helpers.AlertManagerFactoryProducer{}
 					alertManagerFactoryProd.GetAlertManagerFactory(helpers.PrometheusAMC).GetAlertType("Mail").Alert(map[string]string{
-						"alertname":"testalert","EventsOccured":strconv.Itoa(task.EventOccured),"ErrorCode":task.ErrorCode,"TraceID":task.TraceID,"EventType":task.EventType,"ServiceName":task.ServiceName})
+						"alertname":"testalert","EventsOccured":string(task.EventOccured),"ErrorCode":task.ErrorCode,"TraceID":task.TraceID,"EventType":task.EventType,"ServiceName":task.ServiceName, "severity":"warning"})
 				}
 				fmt.Println("IsDelete Approved", isDeleteApproved)
 				fmt.Println(shouldAlertTriggered)
@@ -323,7 +319,7 @@ func ExecuteEventForNotification(){
 				if shouldAlertTriggered{
 					alertManagerFactoryProd := helpers.AlertManagerFactoryProducer{}
 					alertManagerFactoryProd.GetAlertManagerFactory(helpers.PrometheusAMC).GetAlertType("Mail").Alert(map[string]string{
-						"alertname":"testalert","EventsOccured":strconv.Itoa(task.EventOccured),"ErrorCode":task.ErrorCode,"TraceID":task.TraceID,"EventType":task.EventType,"ServiceName":task.ServiceName})
+						"alertname":"testalert","EventsOccured":string(task.EventOccured),"ErrorCode":task.ErrorCode,"TraceID":task.TraceID,"EventType":task.EventType,"ServiceName":task.ServiceName, "severity":"warning"})
 				}
 				if isDeleteApproved{
 					err = dao.DeleteEvent(context.Background(), etcdConnection, task.EventType)
@@ -352,7 +348,8 @@ func ExecuteEventForNotification(){
                     alertManagerFactoryProd := helpers.AlertManagerFactoryProducer{}
 
 					alertManagerFactoryProd.GetAlertManagerFactory(helpers.PrometheusAMC).GetAlertType("Mail").Alert(map[string]string{
-						"alertname":"eventsbasedalert","EventsOccured":strconv.Itoa(task.EventOccured),"ErrorCode":task.ErrorCode,"TraceID":task.TraceID,"EventType":task.EventType,"ServiceName":task.ServiceName})
+						"alertname":"eventsbasedalert","EventsOccured":string(task.EventOccured),"ErrorCode":task.ErrorCode,"TraceID":task.TraceID,"EventType":task.EventType,"ServiceName":task.ServiceName,
+						"severity":"warning"})
 				}
 				if isDeleteApproved{
 					err = dao.DeleteEvent(context.Background(), etcdConnection, task.EventType)
