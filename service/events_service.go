@@ -37,7 +37,6 @@ func SyncAppsEvents(ctx context.Context, eventsRequest *requests.SyncApps) error
 
 func DeployAppsEvents(ctx context.Context, eventsRequest *requests.DeployApps) error {
 	ruleSetObj := helpers.GetRuleSetObject()
-	fmt.Println(ruleSetObj)
 	etcdConnection := database.GetEtcdConnection()
 	resp, err := dao.GetEvent(ctx, etcdConnection, eventsRequest.EventType)
 	if err != nil{
@@ -62,7 +61,6 @@ func DeployAppsEvents(ctx context.Context, eventsRequest *requests.DeployApps) e
 
 func AddNodeEvents(ctx context.Context, eventsRequest *requests.AddNode) error {
 	ruleSetObj := helpers.GetRuleSetObject()
-	fmt.Println(ruleSetObj)
 	etcdConnection := database.GetEtcdConnection()
 	resp, err := dao.GetEvent(ctx, etcdConnection, eventsRequest.EventType)
 	if err != nil{
@@ -86,7 +84,6 @@ func AddNodeEvents(ctx context.Context, eventsRequest *requests.AddNode) error {
 
 func DeleteNodeEvents(ctx context.Context, eventsRequest *requests.DeleteNode) error {
 	ruleSetObj := helpers.GetRuleSetObject()
-	fmt.Println(ruleSetObj)
 	etcdConnection := database.GetEtcdConnection()
 	resp, err := dao.GetEvent(ctx, etcdConnection, eventsRequest.EventType)
 	if err != nil{
@@ -111,7 +108,6 @@ func DeleteNodeEvents(ctx context.Context, eventsRequest *requests.DeleteNode) e
 
 func CreateClusterEvents(ctx context.Context, eventsRequest *requests.CreateCluster) error {
 	ruleSetObj := helpers.GetRuleSetObject()
-	fmt.Println(ruleSetObj)
 	etcdConnection := database.GetEtcdConnection()
 	resp, err := dao.GetEvent(ctx, etcdConnection, eventsRequest.EventType)
 	if err != nil{

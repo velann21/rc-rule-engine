@@ -21,7 +21,7 @@ type PromethuesMail struct {
 }
 
 func (mail *PromethuesMail) Alert(metaInformation map[string]string) {
-	go func(){
+	//go func(){
 		p := prometheus.New(os.Getenv("ALERT_MANAGER_ENDPOINTS"))
 		fmt.Println("Alert Sent")
 		err := p.AddAlerts(context.Background(), &prometheus.Alert{
@@ -34,7 +34,7 @@ func (mail *PromethuesMail) Alert(metaInformation map[string]string) {
 		if err != nil {
 			log.Error("Something wrong while sending an alert")
 		}
-	}()
+	//}()
 
 }
 
